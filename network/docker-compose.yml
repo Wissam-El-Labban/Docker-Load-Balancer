@@ -1,0 +1,41 @@
+version: '3'
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - 443:443
+    networks:
+      proxynet:
+        ipv4_address: 172.16.1.2
+  load-balancer:
+    build: ./load_balancer
+    networks:
+      proxynet:
+        ipv4_address: 172.16.1.3
+  dvwa:
+    build: ./dvwa
+    networks:
+      proxynet:
+        ipv4_address: 172.16.1.4
+  dvwa2:
+    build: ./dvwa2
+    networks:
+      proxynet:
+        ipv4_address: 172.16.1.5
+
+  modsecurity:
+    build: ./modsec
+    ports:
+      - 8080:80
+    networks:
+      proxynet:
+        ipv4_address: 172.16.1.8
+networks:
+  proxynet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.1.0/24
+          gateway: 172.16.1.1
+

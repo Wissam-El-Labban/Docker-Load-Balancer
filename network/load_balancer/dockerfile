@@ -1,0 +1,11 @@
+FROM nginx:latest
+RUN apt-get update
+RUN apt install nano -y
+RUN mkdir /etc/nginx/ssl
+RUN chmod 700 /etc/nginx/ssl
+ADD ssl /etc/nginx/ssl
+COPY default.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 443
+
+

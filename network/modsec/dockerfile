@@ -1,0 +1,18 @@
+FROM ubuntu/apache2
+RUN apt-get update
+RUN apt install libapache2-mod-security2 -y
+RUN a2enmod headers
+RUN apt install git -y
+RUN rm -rf /usr/share/modsecurity-crs
+RUN git clone https://github.com/coreruleset/coreruleset /usr/share/modsecurity-crs
+RUN mv /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-crs/crs-setup.conf
+#RUN rm -rf /usr/share/modsecurity-crs/*
+#ADD modsecurity-crs /usr/share/modsecurity-crs/
+RUN mv /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
+COPY modsecurity.conf /etc/modsecurity/modsecurity.conf
+COPY apache2.conf /etc/apache2/apache2.conf
+COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
+RUN a2enmod proxy
+RUN a2enmod proxy_http
+
+EXPOSE 80
